@@ -64,6 +64,9 @@ public class MappingContract implements ContractInterface {
             //查看private data是否已经有该数据:没有直接放入，有就更新
             byte[] stateData = stub.getPrivateData("collectionVirtual", mac);
             if (stateData == null || stateData.length == 0) {
+                Common common = new Common();
+                common.mac = iflytek.mac;
+                common.imei = iflytek.imei;
                 stub.putPrivateData("collectionVirtual", mac, iflytek.tojson());
             } else {
                 // TODO：更新IMEI，数据冲突暂未考虑
