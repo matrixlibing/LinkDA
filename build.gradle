@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
+
+group 'org.linkda'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.0.0'
+    compile 'org.slf4j:slf4j-api:1.7.11'
+    compile 'com.alibaba:fastjson:1.2.62'
+    testCompile 'junit:junit:4.12'
+}
+
+shadowJar {
+    baseName = 'chaincode'
+    version = project.version
+    classifier = null
+    manifest {
+        attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
+    }
+}
