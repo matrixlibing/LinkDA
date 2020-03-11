@@ -5,7 +5,6 @@ import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.*;
 import org.hyperledger.fabric.shim.ChaincodeStub;
-import org.linkda.chaincode.model.Common;
 import org.linkda.chaincode.model.Iflytek;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +60,22 @@ public class MappingContract implements ContractInterface {
             Iflytek iflytek = Iflytek.deserialize(data);
             logger.debug("transient data：{}", iflytek.tojson());
 
-            //查看private data是否已经有该数据:没有直接放入，有就更新
+            //查看collection是否存在人群ID,有则增量更新数据
+            byte[] stateData = stub.getPrivateData("pvthub", mac);
+            if (stateData != null) {
+                Iflytek old = Iflytek.deserialize(stateData);
+                iflytek.gid.addAll(old.gid);
+                // TODO: 过期 gid 处理
+            }
+            stub.putPrivateData("pvthub", mac, iflytek.tojson());
+
+           /* //查看private data是否已经有该数据:没有直接放入，有就更新
             byte[] stateData = stub.getPrivateData("collectionVirtual", mac);
             if (stateData == null || stateData.length == 0) {
                 Common common = new Common();
                 common.mac = iflytek.mac;
                 common.imei = iflytek.imei;
+                common.gid = iflytek.gid;
                 stub.putPrivateData("collectionVirtual", mac, iflytek.tojson());
             } else {
                 // TODO：更新IMEI，数据冲突暂未考虑
@@ -74,7 +83,7 @@ public class MappingContract implements ContractInterface {
                 common.imei = iflytek.imei;
                 //将stateData放回private data
                 stub.putPrivateData("collectionVirtual", mac, common.tojson());
-            }
+            } */
         }
 
         return State.OK.getCode();
