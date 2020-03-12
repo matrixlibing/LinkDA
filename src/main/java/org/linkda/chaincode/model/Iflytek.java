@@ -18,6 +18,11 @@ public class Iflytek {
      */
     public List<String> imei  = Lists.newArrayList();
 
+    /**
+     * 设备人群ID列表
+     */
+    public List<String> gid = Lists.newArrayList();
+
     public static Iflytek deserialize(byte[] data) {
         return JSON.parseObject(new String(data), Iflytek.class);
     }
