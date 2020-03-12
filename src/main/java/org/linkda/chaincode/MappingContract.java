@@ -132,9 +132,8 @@ public class MappingContract implements ContractInterface {
                     } else {
                         // TODO：如果有，更新对应的 ottmac
                         HwData hstateData = HwData.deserialize(stateData);
-                        for (String ottMac : hwDataTek.ottMac){ // 更新对应的OTTmac信息集合，把没有出现过的追加进去
-                            hstateData.ottMac.add(ottMac);
-                        }
+                        // 更新对应的OTTmac信息集合，把没有出现过的追加进去
+                        hstateData.ottMac.addAll(hwDataTek.ottMac);
                         //将hstateData放回private data
                         stub.putPrivateData("collectionHuan", mac, hstateData.tojson());
                     }
@@ -175,7 +174,7 @@ public class MappingContract implements ContractInterface {
         String query = "{\"selector\":{\"gid\":{\"$elemMatch\":{\"$eq\":\""+crowdId+"\"}}}}";
         //读取讯飞对应的数据集数据
         try {
-            QueryResultsIterator<KeyValue> collectionHuan = stub.getPrivateDataQueryResult("pvthub", query);
+            QueryResultsIterator<KeyValue> collectionHuan = stub.getPrivateDataQueryResult("collectionVirtual", query);
             HWDataComparisonDetail(ctx, collectionHuan,crowdId);
         }catch (ChaincodeException e){
             logger.error("匹配更新失败");
