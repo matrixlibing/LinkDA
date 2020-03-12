@@ -61,13 +61,13 @@ public class MappingContract implements ContractInterface {
             logger.debug("transient data：{}", iflytek.tojson());
 
             //查看collection是否存在人群ID,有则增量更新数据
-            byte[] stateData = stub.getPrivateData("pvthub", mac);
+            byte[] stateData = stub.getPrivateData("collectionVirtual", mac);
             if (stateData != null) {
                 Iflytek old = Iflytek.deserialize(stateData);
                 iflytek.gid.addAll(old.gid);
                 // TODO: 过期 gid 处理
             }
-            stub.putPrivateData("pvthub", mac, iflytek.tojson());
+            stub.putPrivateData("collectionVirtual", mac, iflytek.tojson());
 
            /* //查看private data是否已经有该数据:没有直接放入，有就更新
             byte[] stateData = stub.getPrivateData("collectionVirtual", mac);
