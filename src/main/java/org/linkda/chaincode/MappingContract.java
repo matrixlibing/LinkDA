@@ -109,7 +109,7 @@ public class MappingContract implements ContractInterface {
         //身份校验
         try {
             ClientIdentity cid = new ClientIdentity(stub);
-            if (!"MGMMSP".equals(cid.getMSPID())) {
+            if (!"HWMSP".equals(cid.getMSPID())) {
                 logger.error("客户端MSPID为 {}，非欢网成员（HWMSP）。", cid.getMSPID());
                 return State.Unauthorized.getCode();
             }
@@ -250,8 +250,8 @@ public class MappingContract implements ContractInterface {
 
         byte[] stateData = stub.getPrivateData("collectionHuan", key);
         if (stateData == null || stateData.length == 0) {
-            MappingContract.logger.error("KEY $ HWDataSearch :", key);
-            throw new ChaincodeException("KEY $ HWDataSearch :" + key);
+            MappingContract.logger.error("HWDataSearch查询的key是{}!", key);
+            throw new ChaincodeException("HWDataSearch查询的key是{}!" + key);
         }
         HwData hwData = HwData.deserialize(stateData);
         return hwData.tojson();
