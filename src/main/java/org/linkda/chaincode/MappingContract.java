@@ -67,7 +67,7 @@ public class MappingContract implements ContractInterface {
 
             //查看collection是否存在人群ID,有则增量更新数据
             byte[] stateData = stub.getPrivateData("collectionVirtual", mac);
-            if (stateData != null) {
+            if (stateData != null && stateData.length != 0) {
                 Iflytek old = Iflytek.deserialize(stateData);
                 iflytek.gid.addAll(old.gid);
                 // TODO: 过期 gid 处理
