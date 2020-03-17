@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.0.0'
+    implementation 'org.hyperledger.fabric:fabric-gateway-java:2.0.0'
     implementation 'org.slf4j:slf4j-api:1.7.11'
     implementation 'com.alibaba:fastjson:1.2.62'
     testCompile 'junit:junit:4.8.2'
