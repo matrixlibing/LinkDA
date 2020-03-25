@@ -154,6 +154,7 @@ public class DataComparisonApplication {
             gateway.close();
         } catch (IOException e) {
             logger.error("", e);
+            e.printStackTrace();
         }
     }
 
@@ -198,6 +199,5 @@ public class DataComparisonApplication {
         }
         return content.replace("[","").replace("]","").split(",");
     }
-
 
 }
