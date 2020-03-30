@@ -26,6 +26,7 @@ java -cp javaclient.jar org.linkda.app.BlockGeneratedListening --chaincode-name 
             eventSource: true
 
 5,新的块产生时欢网调用HWUpdate更新欢网私有数据
+java -cp javaclient.jar org.linkda.app.UploadService --chaincode-name mycc1 --channel-name firstchannel --connection-profile ./networkConnection.yaml --contract-package org.linkda.chaincode --user-label Admin@huanwang.com --wallet-directory ./wallet --transaction-name HWUpdate
 
       peers:
          peer2.voiceads.cn:
