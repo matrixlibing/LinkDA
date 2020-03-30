@@ -117,22 +117,6 @@ public class UploadApplication {
 
             Contract contract = network.getContract(chaincodeName, contractPackage);
 
-            //增加ContractListener,接受所有contract交易产生的event
-//            contract.addContractListener(new Consumer<ContractEvent>() {
-//                @Override
-//                public void accept(ContractEvent contractEvent) {
-//                    //NO-OP 监听事件并做出响应处理
-//                }
-//            });
-
-            //增加BlockListener,接受network中的块生产信息
-//            network.addBlockListener(new Consumer<BlockEvent>() {
-//                @Override
-//                public void accept(BlockEvent blockEvent) {
-//                    // 对于已经写入块的消息进行监听
-//                }
-//            });
-
             Map<String, byte[]> transientData = new HashMap<String, byte[]>();
             for (File file : files) {
                 int lineNumbCur = 0;
