@@ -14,7 +14,14 @@ public enum State {
     /**
      * 链码内部错误
      */
-    ServerError(500, "链码内部错误");
+    ServerError(500, "链码内部错误"),
+
+
+    /**
+     * 身份认证错误
+     */
+    DataNotFound(404, "数据未找到");
+
 
 
     private int code;
