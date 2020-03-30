@@ -1,5 +1,6 @@
 package org.linkda.app;
 
+import com.alibaba.fastjson.JSON;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.commons.cli.*;
 import org.hyperledger.fabric.gateway.*;
@@ -11,10 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class BlockGeneratedListening {
@@ -108,7 +115,10 @@ public class BlockGeneratedListening {
 
             Network network = gateway.getNetwork(channelName);
 
-//            Contract contract = network.getContract(chaincodeName, contractPackage);
+            //共享内存
+            RandomAccessFile RAFile = new RandomAccessFile("/tmp/fabric_upload.dat", "rw");
+            FileChannel fc = RAFile.getChannel();
+            MappedByteBuffer mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, 1024 * 1024);
 
             final String finalChannelName = channelName;
             final String finalChaincodeName = chaincodeName;
@@ -139,14 +149,41 @@ public class BlockGeneratedListening {
                         txActionInfo.getTxReadWriteSet().getNsRwsetInfos().forEach(new Consumer<TxReadWriteSetInfo.NsRwsetInfo>() {
                             @Override
                             public void accept(TxReadWriteSetInfo.NsRwsetInfo nsRwsetInfo) {
-                                //NsRwsetInfo 接口暂未开放 collection HashId-> HashValue 的读
                                 if (nsRwsetInfo.getNamespace().equals(finalChaincodeName)) {
                                     List<KvRwset.KVWrite> kvWrites = null;
                                     try {
                                         kvWrites = nsRwsetInfo.getRwset().getWritesList();
+                                        Map<String, String> transientData = new HashMap<>();
                                         for (KvRwset.KVWrite kvWrite : kvWrites) {
-                                            logger.info("BlockId {}, Key {}, Value {}", blockEvent.getBlockNumber(), kvWrite.getKey(),
-                                                    new String(kvWrite.getValue().toByteArray()));
+                                            String mac = kvWrite.getKey();
+                                            String value = new String(kvWrite.getValue().toByteArray());
+                                            transientData.put(mac, value);
+                                            logger.info("BlockId {}, Key {}, Value {}", blockEvent.getBlockNumber(), mac, value);
+                                        }
+                                        try {
+                                            byte[] zeros = new byte[1024 * 1024];
+                                            FileLock flock = fc.lock();
+                                            mbb.clear();
+                                            mbb.put(zeros);
+
+                                            mbb.clear();
+                                            mbb.put(JSON.toJSONBytes(transientData));
+                                            flock.release();
+
+                                            byte[] blockData = new byte[1024 * 1024];
+                                            while (true) {
+                                                flock = fc.lock();
+                                                mbb.clear();
+                                                mbb.get(blockData);
+                                                flock.release();
+
+                                                String str = new String(blockData).trim();
+                                                logger.info(str);
+                                                if(str.length() == 0)
+                                                    break;
+                                            }
+                                        } catch (Exception e) {
+                                            logger.error(e.toString());
                                         }
                                     } catch (InvalidProtocolBufferException e) {
                                         logger.warn("BlockId {}, but error at {}", blockEvent.getBlockNumber(), e);
