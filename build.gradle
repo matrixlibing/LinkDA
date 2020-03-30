@@ -10,9 +10,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenLocal()
-    flatDir { dirs 'libs'}
     maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
-    mavenCentral()
 }
 
 dependencies {
