@@ -93,13 +93,13 @@ public class MappingContract implements ContractInterface {
             byte[] data = entry.getValue();
             HwData hwData = HwData.deserialize(data);
             //查看collection是否存在人群ID,有则增量更新数据
-            byte[] stateData = stub.getPrivateData("collectionHW", mac);
+            byte[] stateData = stub.getPrivateData("collectionHuan", mac);
             if (stateData != null && stateData.length != 0) {
                 HwData old = HwData.deserialize(stateData);
                 hwData.gid.addAll(old.gid);
                 hwData.ottMac.addAll(old.ottMac);
             }
-            stub.putPrivateData("collectionHW", mac, hwData.tojson());
+            stub.putPrivateData("collectionHuan", mac, hwData.tojson());
         }
 
         // 返回更新结果
@@ -128,11 +128,11 @@ public class MappingContract implements ContractInterface {
             byte[] data = entry.getValue();
             Iflytek iflytek = Iflytek.deserialize(data);
             //查看collection是否存在人群ID,有则增量更新数据
-            byte[] stateData = stub.getPrivateData("collectionHW", mac);
+            byte[] stateData = stub.getPrivateData("collectionHuan", mac);
             if (stateData != null && stateData.length != 0) {
                 HwData hwData = HwData.deserialize(stateData);
                 hwData.gid.addAll(iflytek.gid);
-                stub.putPrivateData("collectionHW", mac, hwData.serialize());
+                stub.putPrivateData("collectionHuan", mac, hwData.serialize());
             }
         }
 
