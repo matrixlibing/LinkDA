@@ -11,6 +11,8 @@ public class Iflytek {
      */
     public Set<String> gid = Sets.newHashSet();
 
+    public long uptime;
+
     public static Iflytek deserialize(byte[] data) {
         return JSON.parseObject(new String(data), Iflytek.class);
     }

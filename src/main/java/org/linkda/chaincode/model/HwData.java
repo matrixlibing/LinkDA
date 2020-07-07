@@ -12,6 +12,8 @@ public class HwData {
     
     public Set<String> gid = new HashSet<String>();
 
+    public long uptime;
+
     public static HwData deserialize(byte[] data) {
         return JSON.parseObject(new String(data), HwData.class);
     }
@@ -23,8 +25,6 @@ public class HwData {
     public String tojson() {
         return JSON.toJSONString(this);
     }
-
-
 
 
 }
